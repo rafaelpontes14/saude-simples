@@ -1,0 +1,2 @@
+delete from public.user_roles where user_id in (select id from auth.users where email = 'medico@saude.demo');
+insert into public.user_roles (user_id, role) select id, 'medico' from auth.users where email = 'medico@saude.demo';
