@@ -43,11 +43,11 @@ function AuthPage() {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const parsed = loginSchema.safeParse({ email: fd.get("email"), password: fd.get("password") });
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+    if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Dados inválidos"); return; }
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword(parsed.data);
     setLoading(false);
-    if (error) return toast.error("E-mail ou senha incorretos.");
+    if (error) { toast.error("E-mail ou senha incorretos."); return; }
     navigate({ to: "/painel" });
   }
 
@@ -59,7 +59,7 @@ function AuthPage() {
       email: fd.get("email"),
       password: fd.get("password"),
     });
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+    if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Dados inválidos"); return; }
     setLoading(true);
     const { data, error } = await supabase.auth.signUp({
       email: parsed.data.email,
@@ -67,8 +67,8 @@ function AuthPage() {
       options: { emailRedirectTo: window.location.origin, data: { full_name: parsed.data.fullName } },
     });
     setLoading(false);
-    if (error) return toast.error(error.message.includes("registered") ? "Este e-mail já está cadastrado." : error.message);
-    if (!data.session) return toast.success("Conta criada! Verifique seu e-mail para confirmar.");
+    if (error) { toast.error(error.message.includes("registered") ? "Este e-mail já está cadastrado." : error.message); return; }
+    if (!data.session) { toast.success("Conta criada! Verifique seu e-mail para confirmar."); return; }
     toast.success("Conta criada com sucesso!");
     navigate({ to: "/painel" });
   }

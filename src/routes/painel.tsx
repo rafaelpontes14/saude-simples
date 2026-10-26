@@ -130,7 +130,7 @@ function AreaPaciente() {
       preferred_date: fd.get("preferred_date"),
       reason: fd.get("reason"),
     });
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+    if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Dados inválidos"); return; }
     create.mutate(parsed.data, {
       onSuccess: () => {
         form.reset();
