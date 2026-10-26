@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StatusBadge } from "@/components/StatusBadge";
+import { AppointmentChat } from "@/components/AppointmentChat";
 import { SPECIALTIES, STATUS_LABEL, STATUS_OPTIONS, formatDate, type AppointmentStatus } from "@/lib/appointments";
 
 export const Route = createFileRoute("/painel")({
@@ -188,9 +189,13 @@ function AreaPaciente() {
               </div>
               <p className="mt-1 text-sm text-muted-foreground">Data desejada: {formatDate(a.preferred_date)}</p>
               <p className="mt-3 text-sm">{a.reason}</p>
-              <p className="mt-3 text-xs text-muted-foreground">
-                Atualizado em {new Date(a.updated_at).toLocaleString("pt-BR")}
-              </p>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs text-muted-foreground">
+                  Atualizado em {new Date(a.updated_at).toLocaleString("pt-BR")}
+                </p>
+                <AppointmentChat appointmentId={a.id} patientId={a.patient_id} currentUserId={user.id}
+                  title={`${a.specialty} · ${formatDate(a.preferred_date)}`} />
+              </div>
             </article>
           ))}
         </section>
@@ -200,6 +205,7 @@ function AreaPaciente() {
 }
 
 function AreaMedico() {
+  const { user } = Route.useRouteContext();
   const qc = useQueryClient();
   const [filter, setFilter] = useState<"todas" | AppointmentStatus>("todas");
 
@@ -268,6 +274,10 @@ function AreaMedico() {
                 {a.specialty} · Data desejada: {formatDate(a.preferred_date)}
               </p>
               <p className="mt-2 text-sm">{a.reason}</p>
+              <div className="mt-3">
+                <AppointmentChat appointmentId={a.id} patientId={a.patient_id} currentUserId={user.id}
+                  title={`${a.profiles?.full_name || "Paciente"} · ${a.specialty}`} />
+              </div>
             </div>
             <Select
               value={a.status}
