@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StatusBadge } from "@/components/StatusBadge";
 import { AppointmentChat } from "@/components/AppointmentChat";
+import { NotificationBell } from "@/components/NotificationBell";
 import { SPECIALTIES, STATUS_LABEL, STATUS_OPTIONS, formatDate, type AppointmentStatus } from "@/lib/appointments";
 
 export const Route = createFileRoute("/painel")({
@@ -50,7 +51,7 @@ type Appointment = {
 };
 
 function Painel() {
-  const { isDoctor, fullName } = Route.useRouteContext();
+  const { isDoctor, fullName, user } = Route.useRouteContext();
   const navigate = useNavigate();
   const qc = useQueryClient();
 
@@ -73,6 +74,7 @@ function Painel() {
               {isDoctor ? <Stethoscope className="h-4 w-4" /> : <User className="h-4 w-4" />}
               {isDoctor ? "Médico(a)" : "Paciente"}: {fullName}
             </span>
+            <NotificationBell userId={user.id} />
             <Button variant="outline" size="sm" onClick={signOut}>
               <LogOut className="h-4 w-4" /> Sair
             </Button>
