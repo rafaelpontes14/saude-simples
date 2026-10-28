@@ -210,6 +210,8 @@ function AreaMedico() {
   const { user } = Route.useRouteContext();
   const qc = useQueryClient();
   const [filter, setFilter] = useState<"todas" | AppointmentStatus>("todas");
+  const [tab, setTab] = useState<"solicitacoes" | "historico">("solicitacoes");
+  const [search, setSearch] = useState("");
 
   const { data, isLoading } = useQuery({
     queryKey: ["appointments", "all"],
@@ -338,6 +340,7 @@ function AreaMedico() {
           </article>
         ))}
       </div>
+      </>)}
     </div>
   );
 }
