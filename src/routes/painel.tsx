@@ -210,6 +210,8 @@ function AreaMedico() {
   const { user } = Route.useRouteContext();
   const qc = useQueryClient();
   const [filter, setFilter] = useState<"todas" | AppointmentStatus>("todas");
+  const [tab, setTab] = useState<"solicitacoes" | "historico">("solicitacoes");
+  const [search, setSearch] = useState("");
 
   const { data, isLoading } = useQuery({
     queryKey: ["appointments", "all"],
@@ -239,12 +241,55 @@ function AreaMedico() {
   const list = (data ?? []).filter((a) => filter === "todas" || a.status === filter);
   const count = (s: AppointmentStatus) => (data ?? []).filter((a) => a.status === s).length;
 
+  const history = (data ?? [])
+    .filter((a) => a.status === "concluida")
+    .filter((a) => (a.profiles?.full_name ?? "").toLowerCase().includes(search.trim().toLowerCase()))
+    .sort((x, y) => y.updated_at.localeCompare(x.updated_at));
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Área do médico</h1>
         <p className="text-muted-foreground">Visualize as solicitações e atualize o status.</p>
       </div>
+      <div className="flex gap-2 border-b">
+        {([["solicitacoes", "Solicitações"], ["historico", "Histórico de atendimentos"]] as const).map(([k, l]) => (
+          <button key={k} onClick={() => setTab(k)}
+            className={`-mb-px border-b-2 px-3 py-2 text-sm font-medium ${tab === k ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
+            {l}
+          </button>
+        ))}
+      </div>
+      {tab === "historico" ? (
+        <div className="space-y-4">
+          <Input placeholder="Buscar por paciente" value={search} onChange={(e) => setSearch(e.target.value)} className="max-w-sm" />
+          {isLoading && <p className="text-muted-foreground">Carregando...</p>}
+          {data && history.length === 0 && (
+            <p className="rounded-2xl border border-dashed p-8 text-center text-muted-foreground">Nenhum atendimento concluído.</p>
+          )}
+          <div className="space-y-3">
+            {history.map((a) => (
+              <article key={a.id} className="rounded-2xl border bg-card p-5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="font-semibold">{a.profiles?.full_name || "Paciente"}</h3>
+                  <StatusBadge status={a.status} />
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {a.specialty} · Data desejada: {formatDate(a.preferred_date)}
+                </p>
+                <p className="mt-2 text-sm">{a.reason}</p>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs text-muted-foreground">
+                    Concluído em {new Date(a.updated_at).toLocaleString("pt-BR")}
+                  </p>
+                  <AppointmentChat appointmentId={a.id} patientId={a.patient_id} currentUserId={user.id}
+                    title={`${a.profiles?.full_name || "Paciente"} · ${a.specialty}`} />
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      ) : (<>
       <div className="grid gap-3 sm:grid-cols-3">
         {STATUS_OPTIONS.map((s) => (
           <div key={s} className="rounded-2xl border bg-card p-4">
@@ -295,6 +340,7 @@ function AreaMedico() {
           </article>
         ))}
       </div>
+      </>)}
     </div>
   );
 }
