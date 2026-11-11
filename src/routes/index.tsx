@@ -89,7 +89,7 @@ function AuthPage() {
             <li className="flex items-center gap-3"><ShieldCheck className="h-5 w-5" /> Seus dados visíveis apenas para você e a equipe médica</li>
           </ul>
         </div>
-        <p className="text-xs text-primary-foreground/70">Projeto acadêmico — dados fictícios</p>
+        <p className="text-xs text-primary-foreground/70">Projeto acadêmico</p>
       </aside>
 
       <main className="flex items-center justify-center px-4 py-12">
