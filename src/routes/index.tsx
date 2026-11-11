@@ -4,6 +4,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { HeartPulse, CalendarCheck, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { translateAuthError } from "@/lib/auth-errors";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,7 +48,7 @@ function AuthPage() {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword(parsed.data);
     setLoading(false);
-    if (error) { toast.error("E-mail ou senha incorretos."); return; }
+    if (error) { toast.error(translateAuthError(error.message, "E-mail ou senha incorretos.")); return; }
     navigate({ to: "/painel" });
   }
 
@@ -67,7 +68,7 @@ function AuthPage() {
       options: { emailRedirectTo: window.location.origin, data: { full_name: parsed.data.fullName } },
     });
     setLoading(false);
-    if (error) { toast.error(error.message.includes("registered") ? "Este e-mail já está cadastrado." : error.message); return; }
+    if (error) { toast.error(translateAuthError(error.message, "Não foi possível criar sua conta. Tente novamente.")); return; }
     if (!data.session) { toast.success("Conta criada! Verifique seu e-mail para confirmar."); return; }
     toast.success("Conta criada com sucesso!");
     navigate({ to: "/painel" });
