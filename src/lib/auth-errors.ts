@@ -8,6 +8,10 @@ type Rule = {
 
 const RULES: Rule[] = [
   {
+    test: /email address is not allowed|cannot receive email/i,
+    toPortuguese: () => "Este e-mail não pode receber mensagens. Use um endereço de e-mail real.",
+  },
+  {
     test: /password is known to be weak and easy to guess|password is too (?:weak|common)/i,
     toPortuguese: () => "Essa senha é fraca e fácil de adivinhar. Escolha outra.",
   },

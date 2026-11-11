@@ -33,6 +33,22 @@ const signupSchema = loginSchema.extend({
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [forgot, setForgot] = useState(false);
+
+  async function handleForgot(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const parsed = z.string().trim().email("E-mail inválido").safeParse(fd.get("email"));
+    if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "E-mail inválido"); return; }
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(parsed.data, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setLoading(false);
+    if (error) { toast.error(translateAuthError(error.message, "Não foi possível enviar o e-mail. Tente novamente.")); return; }
+    toast.success("Se o e-mail estiver cadastrado, você receberá um link para criar uma nova senha.");
+    setForgot(false);
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -108,13 +124,29 @@ function AuthPage() {
                 <TabsTrigger value="signup">Cadastrar</TabsTrigger>
               </TabsList>
               <TabsContent value="login">
-                <form onSubmit={handleLogin} className="mt-6 space-y-4">
-                  <Field id="login-email" name="email" label="E-mail" type="email" />
-                  <Field id="login-password" name="password" label="Senha" type="password" />
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Entrando..." : "Entrar"}
-                  </Button>
-                </form>
+                {forgot ? (
+                  <form onSubmit={handleForgot} className="mt-6 space-y-4">
+                    <p className="text-sm text-muted-foreground">Informe seu e-mail para receber um link de redefinição de senha.</p>
+                    <Field id="forgot-email" name="email" label="E-mail" type="email" />
+                    <Button type="submit" className="w-full" disabled={loading}>
+                      {loading ? "Enviando..." : "Enviar link"}
+                    </Button>
+                    <button type="button" onClick={() => setForgot(false)} className="w-full text-center text-sm text-primary hover:underline">
+                      Voltar para o login
+                    </button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleLogin} className="mt-6 space-y-4">
+                    <Field id="login-email" name="email" label="E-mail" type="email" />
+                    <Field id="login-password" name="password" label="Senha" type="password" />
+                    <Button type="submit" className="w-full" disabled={loading}>
+                      {loading ? "Entrando..." : "Entrar"}
+                    </Button>
+                    <button type="button" onClick={() => setForgot(true)} className="w-full text-center text-sm text-primary hover:underline">
+                      Esqueci minha senha
+                    </button>
+                  </form>
+                )}
               </TabsContent>
               <TabsContent value="signup">
                 <form onSubmit={handleSignup} className="mt-6 space-y-4">

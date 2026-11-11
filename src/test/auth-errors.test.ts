@@ -36,3 +36,10 @@ describe("translateAuthError", () => {
     expect(translateAuthError(undefined, "Dados inválidos")).toBe("Dados inválidos");
   });
 });
+
+import { translateAuthError as t2 } from "@/lib/auth-errors";
+import { it as it2, expect as expect2 } from "vitest";
+it2("traduz e-mail que não pode receber mensagens", () => {
+  expect2(t2("This email address is not allowed. Placeholder, reserved, or mistyped domains such as example.com or gmai.com cannot receive email.", "x"))
+    .toBe("Este e-mail não pode receber mensagens. Use um endereço de e-mail real.");
+});
