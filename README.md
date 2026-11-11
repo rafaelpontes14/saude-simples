@@ -32,6 +32,17 @@ Comece criando a aplicação e, ao terminar, informe como testar cada funcionali
 **Live app**: https://saude-simples.lovable.app
 
 
+## Sobre o arquivo `.env`
+
+Este repositório é público por ser um trabalho acadêmico, e o arquivo `.env` está incluído nele. Ele contém apenas três valores: o endereço do backend do projeto, o identificador público do projeto e a chave pública de acesso.
+
+Esses valores são públicos por natureza — os três são embutidos no código que o navegador de qualquer visitante recebe ao abrir o site publicado. A chave do `.env` é a chave pública, a mesma usada pelo navegador: ela não concede acesso administrativo e não permite ler dados de outros usuários, porque quem pode ver o quê é decidido pelas políticas de segurança do banco de dados (RLS), e não pela chave.
+
+Credenciais privadas de verdade (chave administrativa e senha do banco) não estão neste repositório e não são acessíveis neste ambiente. O `.env` é mantido versionado porque a publicação do site é montada a partir dos arquivos commitados.
+
+Para executar o projeto em outro lugar, aponte essas variáveis para o seu próprio backend.
+
+
 ## Development
 
 Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
