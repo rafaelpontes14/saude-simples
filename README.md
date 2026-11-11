@@ -1,55 +1,55 @@
-# Saude Simples
+# Saúde Simples — Simplificando o Atendimento de Saúde
 
-Crie uma aplicação web acadêmica chamada Simplificando o Atendimento de Saúde, com design moderno, simples e responsivo, utilizando tons de verde e branco.
+## Apresentação
 
-Implemente as seguintes funcionalidades:
+O **Saúde Simples** é uma aplicação web acadêmica desenvolvida com o objetivo de facilitar o gerenciamento de solicitações de consultas médicas e contribuir para a organização do atendimento entre pacientes e profissionais de saúde.
 
-Login e cadastro: permitir que usuários criem conta e acessem o sistema.
+A plataforma permite que pacientes solicitem consultas, acompanhem o andamento dos atendimentos e visualizem suas solicitações. Os profissionais de saúde, por sua vez, podem visualizar as solicitações recebidas e atualizar seus respectivos status.
 
-Área do paciente: permitir solicitar consultas, visualizar suas solicitações e acompanhar o status.
+O projeto busca demonstrar como a tecnologia pode contribuir para a simplificação e a melhoria dos processos de atendimento em saúde por meio de uma solução digital acessível e responsiva.
 
-Área do médico: permitir visualizar solicitações e alterar o status para pendente, confirmada ou concluída.
+## Objetivos do projeto
 
-Integração com Supabase: salvar os usuários e as solicitações em um banco de dados real, com autenticação e permissões adequadas para cada perfil.
+- Desenvolver uma plataforma web para gerenciamento de solicitações de consultas médicas.
+- Permitir que pacientes solicitem consultas e acompanhem seus atendimentos.
+- Disponibilizar aos médicos recursos para visualizar e atualizar as solicitações.
+- Implementar autenticação e controle de acesso conforme os perfis dos usuários.
+- Utilizar um banco de dados para armazenar e gerenciar as informações da aplicação.
 
-Mantenha o projeto simples, sem chat, pagamentos ou funcionalidades extras. Utilize dados fictícios e impeça que pacientes acessem solicitações de outros pacientes. Não permita que usuários se atribuam o perfil de médico livremente.
+## Funcionalidades
 
-Quero conseguir testar as funcionalidades pelo próprio Lovable e obter quatro capturas de tela reais para meu relatório acadêmico:
+- **Autenticação:** cadastro e login de usuários.
+- **Área do paciente:** solicitação de consultas e acompanhamento dos respectivos status.
+- **Área do médico:** visualização das solicitações e atualização dos status para pendente, confirmada ou concluída.
+- **Controle de acesso:** separação de permissões entre pacientes e médicos.
+- **Integração com banco de dados:** armazenamento das informações utilizando Supabase e PostgreSQL.
 
-Tela de login ou cadastro.
+## Tecnologias utilizadas
 
-Área do paciente com uma solicitação registrada.
+- React
+- TypeScript
+- Tailwind CSS
+- Supabase
+- PostgreSQL
+- TanStack Start
+- TanStack Router
 
-Área do médico com as solicitações.
+## Aplicação publicada
 
-Consulta com status atualizado.
+A versão funcional do projeto está disponível para acesso:
 
-Priorize fazer as funcionalidades funcionarem, não apenas criar telas bonitas. Configure a integração com o Supabase e as políticas de segurança. Se precisar de alguma configuração externa, explique o que devo fazer.
+**[Acessar Saúde Simples](https://saude-simples.lovable.app/)**
 
-Comece criando a aplicação e, ao terminar, informe como testar cada funcionalidade e tirar as quatro capturas de tela. Não afirme que algo funciona sem verificar.
+## Repositório
 
+O código-fonte da aplicação está disponibilizado publicamente no GitHub:
 
-**Live app**: https://saude-simples.lovable.app
+**[Acessar repositório Saúde Simples](https://github.com/rafaelpontes14/saude-simples)**
 
+## Observação sobre as variáveis de ambiente
 
-## Sobre o arquivo `.env`
+O arquivo `.env` contém informações de configuração e chaves públicas utilizadas na conexão com o Supabase. Não são incluídas credenciais administrativas ou senhas privadas no repositório. As permissões de acesso aos dados são controladas pelas políticas de segurança (RLS) configuradas no banco de dados.
 
-Este repositório é público por ser um trabalho acadêmico, e o arquivo `.env` está incluído nele. Ele contém apenas três valores: o endereço do backend do projeto, o identificador público do projeto e a chave pública de acesso.
+## Finalidade acadêmica
 
-Esses valores são públicos por natureza — os três são embutidos no código que o navegador de qualquer visitante recebe ao abrir o site publicado. A chave do `.env` é a chave pública, a mesma usada pelo navegador: ela não concede acesso administrativo e não permite ler dados de outros usuários, porque quem pode ver o quê é decidido pelas políticas de segurança do banco de dados (RLS), e não pela chave.
-
-Credenciais privadas de verdade (chave administrativa e senha do banco) não estão neste repositório e não são acessíveis neste ambiente. O `.env` é mantido versionado porque a publicação do site é montada a partir dos arquivos commitados.
-
-Para executar o projeto em outro lugar, aponte essas variáveis para o seu próprio backend.
-
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+O projeto foi desenvolvido no contexto da **Atividade Extensionista III**, do curso de Bacharelado em Engenharia de Software, com a proposta de aplicar conhecimentos de desenvolvimento de sistemas na criação de uma solução tecnológica voltada à organização e à melhoria dos processos de atendimento em saúde.
