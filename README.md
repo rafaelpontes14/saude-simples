@@ -28,7 +28,6 @@ Priorize fazer as funcionalidades funcionarem, não apenas criar telas bonitas. 
 
 Comece criando a aplicação e, ao terminar, informe como testar cada funcionalidade e tirar as quatro capturas de tela. Não afirme que algo funciona sem verificar.
 
-This project was built with [Lovable](https://lovable.dev).
 
 **Live app**: https://saude-simples.lovable.app
 
