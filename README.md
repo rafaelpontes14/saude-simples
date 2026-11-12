@@ -10,11 +10,11 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 
 ## Objetivos do projeto
 
-- Desenvolver uma plataforma web para gerenciamento de solicitações de consultas médicas.
-- Permitir que pacientes solicitem consultas e acompanhem seus atendimentos.
-- Disponibilizar aos médicos recursos para visualizar e atualizar as solicitações.
-- Implementar autenticação e controle de acesso conforme os perfis dos usuários.
-- Utilizar um banco de dados para armazenar e gerenciar as informações da aplicação.
+- Desenvolver uma plataforma web para gerenciamento de solicitações de consultas médicas
+- Permitir que pacientes solicitem consultas e acompanhem seus atendimentos
+- Disponibilizar aos médicos recursos para visualizar e atualizar as solicitações
+- Implementar autenticação e controle de acesso conforme os perfis dos usuários
+- Utilizar um banco de dados para armazenar e gerenciar as informações da aplicação
 
 ## Funcionalidades
 
