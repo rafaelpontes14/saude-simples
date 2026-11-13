@@ -18,11 +18,11 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 
 ## Funcionalidades
 
-- **Autenticação:** cadastro e login de usuários.
-- **Área do paciente:** solicitação de consultas e acompanhamento dos respectivos status.
-- **Área do médico:** visualização das solicitações e atualização dos status para pendente, confirmada ou concluída.
-- **Controle de acesso:** separação de permissões entre pacientes e médicos.
-- **Integração com banco de dados:** armazenamento das informações utilizando Supabase e PostgreSQL.
+- **Autenticação:** cadastro e login de usuários
+- **Área do paciente:** solicitação de consultas e acompanhamento dos respectivos status
+- **Área do médico:** visualização das solicitações e atualização dos status para pendente, confirmada ou concluída
+- **Controle de acesso:** separação de permissões entre pacientes e médicos
+- **Integração com banco de dados:** armazenamento das informações utilizando Supabase e PostgreSQL
 
 ## Tecnologias utilizadas
 
