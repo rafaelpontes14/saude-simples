@@ -2,11 +2,11 @@
 
 ## Apresentação
 
-O **Saúde Simples** é uma aplicação web acadêmica desenvolvida com o objetivo de facilitar o gerenciamento de solicitações de consultas médicas e contribuir para a organização do atendimento entre pacientes e profissionais de saúde.
+O **Saúde Simples** é uma aplicação web acadêmica desenvolvida com o objetivo de facilitar o gerenciamento de solicitações de consultas médicas e contribuir para a organização do atendimento entre pacientes e profissionais de saúde
 
-A plataforma permite que pacientes solicitem consultas, acompanhem o andamento dos atendimentos e visualizem suas solicitações. Os profissionais de saúde, por sua vez, podem visualizar as solicitações recebidas e atualizar seus respectivos status.
+A plataforma permite que pacientes solicitem consultas, acompanhem o andamento dos atendimentos e visualizem suas solicitações. Os profissionais de saúde, por sua vez, podem visualizar as solicitações recebidas e atualizar seus respectivos status
 
-O projeto busca demonstrar como a tecnologia pode contribuir para a simplificação e a melhoria dos processos de atendimento em saúde por meio de uma solução digital acessível e responsiva.
+O projeto busca demonstrar como a tecnologia pode contribuir para a simplificação e a melhoria dos processos de atendimento em saúde por meio de uma solução digital acessível e responsiva
 
 ## Objetivos do projeto
 
@@ -31,8 +31,6 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 - Tailwind CSS
 - Supabase
 - PostgreSQL
-- TanStack Start
-- TanStack Router
 
 ## Aplicação publicada
 
