@@ -146,9 +146,7 @@ A aplicação também foi apresentada à comunidade, permitindo demonstrar suas 
 
 - **Aplicação funcional:** [Acessar Saúde Simples](https://saude-simples.lovable.app/)
 - **Código-fonte:** [Acessar repositório no GitHub](https://github.com/rafaelpontes14/saude-simples)
-- **Vídeo demonstrativo:** [Assistir à demonstração da aplicação](https://youtu.be/a4P3y00ctvs)
 
----
 
 ## Autor
 
