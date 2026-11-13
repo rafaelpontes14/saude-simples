@@ -1,6 +1,7 @@
 # Saúde Simples — Simplificando o Atendimento de Saúde
 
 ## Apresentação
+
 O **Saúde Simples** é uma aplicação web acadêmica desenvolvida com o objetivo de facilitar o gerenciamento de solicitações de consultas médicas e contribuir para a organização do atendimento entre pacientes e profissionais de saúde.
 
 A plataforma permite que pacientes solicitem consultas, acompanhem o andamento dos atendimentos em tempo real e troquem mensagens diretamente com a equipe médica. Os profissionais de saúde, por sua vez, podem visualizar as solicitações recebidas, gerenciar os status de atendimento, consultar o histórico de consultas concluídas e interagir via chat.
@@ -10,11 +11,12 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 ---
 
 ## Objetivos do Projeto
+
 - Desenvolver uma plataforma web para gerenciamento e triagem de solicitações de consultas médicas.
 - Permitir que pacientes solicitem consultas, acompanhem seus atendimentos e recebam notificações de atualização.
 - Disponibilizar aos médicos recursos para visualização, atualização de status e consulta ao histórico de atendimentos.
 - Implementar canal de comunicação direta e segura (chat por consulta) entre médico e paciente.
-- Implementar autenticação robusta e controle de acesso estrito conforme os perfis dos usuários (RBAC + RLS).
+- Implementar autenticação robusta e controle de acesso conforme os perfis dos usuários (RBAC + RLS).
 - Garantir a persistência e a integridade das informações em banco de dados relacional com políticas de segurança ativas.
 
 ---
@@ -45,7 +47,7 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 
 - **Front-end:**
   - [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-  - [TanStack Start](https://tanstack.com/start) / [TanStack Router](https://tanstack.com/router) (Roteamento baseado em arquivos com SSR/tipagem estrita)
+  - [TanStack Start](https://tanstack.com/start) / [TanStack Router](https://tanstack.com/router) (Roteamento baseado em arquivos com SSR e tipagem estrita)
   - [TanStack Query](https://tanstack.com/query) (Gerenciamento de estado assíncrono e cache)
   - [Tailwind CSS v4](https://tailwindcss.com/) (Estilização utilitária e responsiva)
   - [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)
@@ -56,9 +58,9 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 - **Back-end e Banco de Dados (BaaS):**
   - [Supabase / Lovable Cloud](https://supabase.com/)
   - [PostgreSQL](https://www.postgresql.org/) (Banco de dados relacional)
-  - **Row Level Security (RLS)** para autorização nativa no banco
-  - **Supabase Realtime** (WebSockets para chat e notificações instantâneas)
-  - Funções `SECURITY DEFINER` em PL/pgSQL (`has_role`, `can_access_appointment`)
+  - **Row Level Security (RLS)** para autorização nativa no banco de dados.
+  - **Supabase Realtime** (WebSockets para chat e notificações instantâneas).
+  - Funções `SECURITY DEFINER` em PL/pgSQL (`has_role`, `can_access_appointment`).
 
 - **Qualidade e Testes:**
   - [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) (Testes automatizados unitários e de rotas)
@@ -68,7 +70,7 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 
 ## Arquitetura e Banco de Dados
 
-A aplicação utiliza uma arquitetura baseada em microsserviços integrados via BaaS (*Backend-as-a-Service*), onde o front-end consome diretamente o PostgreSQL via cliente autenticado do Supabase, com validação de tipos de ponta a ponta gerados automaticamente pelo schema.
+A aplicação adota uma arquitetura baseada no modelo BaaS (*Backend-as-a-Service*). O front-end se comunica com os serviços gerenciados da plataforma Supabase (PostgREST para APIs RESTful, GoTrue para autenticação e Realtime via WebSockets), que, por sua vez, gerenciam e intermedeiam o acesso ao banco de dados relacional PostgreSQL. A aplicação também utiliza tipos TypeScript gerados a partir do schema do banco de dados, proporcionando maior consistência na manipulação das informações.
 
 ### Estrutura de Tabelas (PostgreSQL)
 
@@ -80,11 +82,11 @@ A aplicação utiliza uma arquitetura baseada em microsserviços integrados via 
 
 ### Segurança e Controle de Acesso (Row Level Security - RLS)
 
-Todas as tabelas do schema público possuem RLS ativado (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`), garantindo que nenhuma requisição acesse dados sem política explícita:
+As requisições realizadas por meio da API do Supabase com as credenciais de cliente estão sujeitas à camada de autorização do PostgreSQL, utilizando **Row Level Security (RLS)** para controlar o acesso aos registros conforme as políticas definidas para cada tabela.
 
 - **Isolamento de Pacientes:** Pacientes conseguem visualizar (`SELECT`) e criar (`INSERT`) exclusivamente consultas vinculadas ao seu próprio `auth.uid()`.
 - **Acesso Médico:** Usuários com a role `medico` validada via função `has_role('medico')` têm permissão para ler consultas e atualizar seus status.
-- **Privacidade do Chat e Notificações:** Mensagens e notificações são blindadas pela função `can_access_appointment(appointment_id)`, garantindo que apenas o paciente dono da consulta ou o médico autorizado leiam ou enviem mensagens.
+- **Privacidade do Chat e Notificações:** Mensagens e notificações são protegidas pela função `can_access_appointment(appointment_id)`, garantindo que apenas o paciente dono da consulta ou o médico autorizado leiam ou enviem mensagens.
 
 ---
 
@@ -106,3 +108,4 @@ Todas as tabelas do schema público possuem RLS ativado (`ALTER TABLE ... ENABLE
 ├── public/                    # Favicons e manifestos estáticos
 ├── supabase/                  # Configurações do ambiente de banco
 └── package.json               # Dependências e scripts do projeto
+```
