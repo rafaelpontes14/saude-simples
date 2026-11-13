@@ -31,6 +31,8 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 - Tailwind CSS
 - Supabase
 - PostgreSQL
+- Vitest
+- ESLint
 
 ## Aplicação publicada
 
