@@ -15,8 +15,8 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 - Desenvolver uma plataforma web para gerenciamento e triagem de solicitações de consultas médicas.
 - Permitir que pacientes solicitem consultas, acompanhem seus atendimentos e recebam notificações de atualização.
 - Disponibilizar aos médicos recursos para visualização, atualização de status e consulta ao histórico de atendimentos.
-- Implementar canal de comunicação direta e segura (chat por consulta) entre médico e paciente.
-- Implementar autenticação robusta e controle de acesso conforme os perfis dos usuários (RBAC + RLS).
+- Implementar um canal de comunicação direta e segura (chat por consulta) entre médico e paciente.
+- Implementar autenticação e controle de acesso conforme os perfis dos usuários (*Role-Based Access Control* - RBAC + RLS).
 - Garantir a persistência e a integridade das informações em banco de dados relacional com políticas de segurança ativas.
 
 ---
@@ -27,7 +27,7 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
   - Cadastro e login de usuários via Supabase Auth.
   - Fluxo de recuperação de senha por e-mail (*Esqueci minha senha*).
   - Validação de senhas com mensagens de erro traduzidas e localizadas para Português (pt-BR).
-  - Controle de perfis (*Role-Based Access Control*): pacientes por padrão no cadastro; perfil médico atribuído de forma protegida no banco.
+  - Controle de perfis (*Role-Based Access Control*): pacientes por padrão no cadastro; perfil médico atribuído de forma protegida no banco de dados.
 
 - **Área do Paciente:**
   - Solicitação de consultas com especialidade médica, data/horário preferencial e descrição do motivo.
@@ -47,8 +47,8 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 
 - **Front-end:**
   - [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-  - [TanStack Start](https://tanstack.com/start) / [TanStack Router](https://tanstack.com/router) (Roteamento baseado em arquivos com SSR e tipagem estrita)
-  - [TanStack Query](https://tanstack.com/query) (Gerenciamento de estado assíncrono e cache)
+  - [TanStack Start](https://tanstack.com/start/) / [TanStack Router](https://tanstack.com/router/) (Roteamento baseado em arquivos, SSR e tipagem estrita)
+  - [TanStack Query](https://tanstack.com/query/) (Gerenciamento de estado assíncrono e cache)
   - [Tailwind CSS v4](https://tailwindcss.com/) (Estilização utilitária e responsiva)
   - [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)
   - [Lucide React](https://lucide.dev/) (Ícones)
@@ -58,9 +58,10 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 - **Back-end e Banco de Dados (BaaS):**
   - [Supabase / Lovable Cloud](https://supabase.com/)
   - [PostgreSQL](https://www.postgresql.org/) (Banco de dados relacional)
-  - **Row Level Security (RLS)** para autorização nativa no banco de dados.
-  - **Supabase Realtime** (WebSockets para chat e notificações instantâneas).
+  - **Row Level Security (RLS)** para controle de acesso nativo no banco de dados.
+  - **Supabase Realtime** (Comunicação via WebSockets para chat e notificações instantâneas).
   - Funções `SECURITY DEFINER` em PL/pgSQL (`has_role`, `can_access_appointment`).
+  - Função `notify_doctors` para geração de notificações automáticas aos profissionais de saúde quando novas solicitações são recebidas.
 
 - **Qualidade e Testes:**
   - [Vitest](https://vitest.dev/) + [Testing Library](https://testing-library.com/) (Testes automatizados unitários e de rotas)
@@ -70,23 +71,42 @@ O projeto busca demonstrar como a tecnologia pode contribuir para a simplificaç
 
 ## Arquitetura e Banco de Dados
 
-A aplicação adota uma arquitetura baseada no modelo BaaS (*Backend-as-a-Service*). O front-end se comunica com os serviços gerenciados da plataforma Supabase (PostgREST para APIs RESTful, GoTrue para autenticação e Realtime via WebSockets), que, por sua vez, gerenciam e intermedeiam o acesso ao banco de dados relacional PostgreSQL. A aplicação também utiliza tipos TypeScript gerados a partir do schema do banco de dados, proporcionando maior consistência na manipulação das informações.
+A aplicação adota uma arquitetura baseada no modelo BaaS (*Backend-as-a-Service*). O front-end se comunica com os serviços gerenciados da plataforma Supabase — **Supabase Auth (GoTrue)** para autenticação, PostgREST para consultas RESTful e Supabase Realtime via WebSockets. Esses serviços intermedeiam o acesso ao banco de dados relacional PostgreSQL.
+
+O cliente Supabase é tipado com base nas definições geradas do schema PostgreSQL (`Database`), enquanto componentes e páginas utilizam interfaces TypeScript sincronizadas com a estrutura das tabelas. Essa abordagem proporciona maior consistência na manipulação das informações e suporte à verificação de tipos durante o desenvolvimento.
 
 ### Estrutura de Tabelas (PostgreSQL)
 
-- **`public.profiles`:** Armazena dados cadastrais dos usuários (`id`, `full_name`, `email`, `created_at`, `updated_at`), vinculados ao `auth.users`.
-- **`public.user_roles`:** Tabela isolada para controle de privilégios (`user_id`, `role`), com valores restritos ao enum (`paciente`, `medico`). Evita que metadados editáveis pelo usuário adulterem privilégios.
-- **`public.appointments`:** Registra as consultas (`id`, `patient_id`, `doctor_id`, `specialty`, `scheduled_for`, `reason`, `status`, `created_at`, `updated_at`, `completed_at`), utilizando o enum (`pendente`, `confirmada`, `concluida`).
+- **`public.profiles`:** Armazena dados cadastrais dos usuários (`id`, `full_name`, `created_at`), vinculados à tabela `auth.users`.
+- **`public.user_roles`:** Tabela isolada para controle de privilégios (`user_id`, `role`), com valores restritos ao enum (`paciente`, `medico`). Evita que metadados editáveis pelo usuário sejam utilizados para adulterar privilégios.
+- **`public.appointments`:** Registra as consultas (`id`, `patient_id`, `specialty`, `preferred_date`, `reason`, `status`, `created_at`, `updated_at`), utilizando o enum (`pendente`, `confirmada`, `concluida`).
 - **`public.messages`:** Registra as mensagens trocadas no chat por consulta (`id`, `appointment_id`, `sender_id`, `content`, `created_at`).
-- **`public.notifications`:** Fila de notificações dos usuários (`id`, `user_id`, `appointment_id`, `title`, `message`, `read`, `created_at`).
+- **`public.notifications`:** Armazena as notificações dos usuários (`id`, `user_id`, `appointment_id`, `title`, `body`, `read`, `created_at`).
 
 ### Segurança e Controle de Acesso (Row Level Security - RLS)
 
-As requisições realizadas por meio da API do Supabase com as credenciais de cliente estão sujeitas à camada de autorização do PostgreSQL, utilizando **Row Level Security (RLS)** para controlar o acesso aos registros conforme as políticas definidas para cada tabela.
+Todas as cinco tabelas do schema público possuem Row Level Security (RLS) ativado. As requisições realizadas por meio da API do Supabase com credenciais de cliente estão sujeitas à camada de autorização do PostgreSQL, que controla o acesso aos registros conforme as políticas definidas para cada tabela.
 
-- **Isolamento de Pacientes:** Pacientes conseguem visualizar (`SELECT`) e criar (`INSERT`) exclusivamente consultas vinculadas ao seu próprio `auth.uid()`.
-- **Acesso Médico:** Usuários com a role `medico` validada via função `has_role('medico')` têm permissão para ler consultas e atualizar seus status.
-- **Privacidade do Chat e Notificações:** Mensagens e notificações são protegidas pela função `can_access_appointment(appointment_id)`, garantindo que apenas o paciente dono da consulta ou o médico autorizado leiam ou enviem mensagens.
+As principais regras de acesso implementadas são:
+
+- **Isolamento de Pacientes:** Pacientes conseguem visualizar (`SELECT`) e criar (`INSERT`) exclusivamente consultas vinculadas ao seu próprio `auth.uid()`, respeitando também as condições definidas para a criação de solicitações, como o status inicial `pendente` e a role `paciente`.
+- **Acesso Médico:** Usuários com a role `medico`, validada por meio da função `has_role(auth.uid(), 'medico')`, possuem permissão para visualizar as solicitações e atualizar seus status.
+- **Privacidade do Chat:** As operações de leitura e envio de mensagens são protegidas pela função `can_access_appointment(auth.uid(), appointment_id)`, permitindo o acesso ao paciente proprietário da consulta ou a usuários com a role `medico`.
+- **Proteção de Notificações:** As operações de leitura (`SELECT`), atualização (`UPDATE`) e exclusão (`DELETE`) são restritas às notificações vinculadas ao `auth.uid()` do usuário autenticado.
+- **Proteção de Perfis:** Os usuários podem consultar o próprio perfil, enquanto profissionais com a role `medico` também podem visualizar perfis de pacientes. A atualização de perfis é restrita ao próprio usuário.
+- **Proteção de Papéis:** A tabela `user_roles` possui política de leitura restrita ao próprio usuário autenticado, sem políticas públicas de inserção ou atualização, evitando a autoatribuição de privilégios pelo cliente.
+
+### Funções do Banco de Dados
+
+A aplicação utiliza funções em PL/pgSQL para centralizar verificações de permissões e controlar o acesso aos registros.
+
+- **`public.has_role(_user_id uuid, _role app_role)`:** Verifica se determinado usuário possui uma função específica cadastrada na tabela `user_roles`.
+
+- **`public.can_access_appointment(_user_id uuid, _appointment_id uuid)`:** Verifica se o usuário possui a role `medico` ou se é o paciente proprietário da consulta. Essa função é utilizada nas políticas de acesso às mensagens.
+
+- **`public.notify_doctors`:** Função responsável por disparar notificações automáticas aos profissionais de saúde quando novas solicitações de consulta são recebidas.
+
+As funções de verificação de permissões utilizam mecanismos do PostgreSQL para realizar consultas controladas às informações de usuários, papéis e consultas.
 
 ---
 
@@ -109,3 +129,27 @@ As requisições realizadas por meio da API do Supabase com as credenciais de cl
 ├── supabase/                  # Configurações do ambiente de banco
 └── package.json               # Dependências e scripts do projeto
 ```
+
+---
+
+## Considerações sobre o Projeto
+
+O Saúde Simples foi desenvolvido como parte de uma atividade acadêmica de extensão, buscando aplicar conhecimentos de Engenharia de Software na construção de uma solução tecnológica voltada à organização do atendimento em saúde.
+
+O projeto contempla funcionalidades de gerenciamento de consultas, comunicação entre pacientes e profissionais e controle de acesso aos dados, utilizando tecnologias modernas de desenvolvimento web e recursos de segurança disponibilizados pelo Supabase.
+
+A aplicação também foi apresentada à comunidade, permitindo demonstrar suas funcionalidades e coletar percepções sobre sua utilização.
+
+---
+
+## Links do Projeto
+
+- **Aplicação funcional:** [Acessar Saúde Simples](https://saude-simples.lovable.app/)
+- **Código-fonte:** [Acessar repositório no GitHub](https://github.com/rafaelpontes14/saude-simples)
+- **Vídeo demonstrativo:** [Assistir à demonstração da aplicação](https://youtu.be/a4P3y00ctvs)
+
+---
+
+## Autor
+
+Desenvolvido por **Rafael Fernandes Pontes** como parte da Atividade Extensionista III do curso de Bacharelado em Engenharia de Software.
